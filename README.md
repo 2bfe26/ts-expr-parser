@@ -1,8 +1,10 @@
-# ts-javascript-expression-parser
+[![codecov](https://codecov.io/gh/2bfe26/ts-javascript-expression-parser/branch/master/graph/badge.svg?token=GG4WPCVPGZ)](https://codecov.io/gh/2bfe26/ts-javascript-expression-parser)
+
+## ts-javascript-expression-parser
 
 > Initially inspired by [tsoding/emoteJAM](https://github.com/tsoding/emoteJAM/blob/master/js/eval.js)
 
-## Todo
+### Todo
 
 - [ ] FEAT: add suport for object literals "{}"
 - [ ] FEAT: add suport for lists "[]"
