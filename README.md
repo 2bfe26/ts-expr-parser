@@ -1,10 +1,8 @@
 ![ts](https://badgen.net/badge/Built%20With/TypeScript/blue)
-[![ci](https://github.com/2bfe26/ts-javascript-expression-parser/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/2bfe26/ts-javascript-expression-parser/actions/workflows/ci.yaml)
-[![codecov](https://codecov.io/gh/2bfe26/ts-javascript-expression-parser/branch/master/graph/badge.svg?token=GG4WPCVPGZ)](https://codecov.io/gh/2bfe26/ts-javascript-expression-parser)
+[![ci](https://github.com/2bfe26/ts-expression-parser/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/2bfe26/ts-expression-parser/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/2bfe26/ts-expression-parser/branch/master/graph/badge.svg?token=GG4WPCVPGZ)](https://codecov.io/gh/2bfe26/ts-expression-parser)
 
-## ts-javascript-expression-parser
-
-> Initially inspired by [tsoding/emoteJAM](https://github.com/tsoding/emoteJAM/blob/master/js/eval.js)
+## ts-expression-parser
 
 ### Todo
 
@@ -12,6 +10,10 @@
 - [ ] FEAT: add suport for lists "[]"
 - [ ] TEST: add tests for create_ast_node, parser
 - [ ] TEST: archive 100% coverage
-- [ ] DOCS: Create a better README.md
-- [ ] REFACTOR: improve create_ast_node
 - [ ] FEAT: Custom errors that point into input code
+
+### References
+
+- [Tsoding](https://www.youtube.com/watch?v=Yjgh7bfh2FU)
+- [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
+- [Operator precedence parser](https://en.wikipedia.org/wiki/Operator-precedence_parser)
