@@ -3,7 +3,9 @@ import { create_ast_node } from "./create_ast_node.ts";
 import { eval_ast } from "./eval_ast.ts";
 
 export type ParserContext = {
+  // deno-lint-ignore no-explicit-any
   vars?: Record<string, any>;
+  // deno-lint-ignore no-explicit-any
   fns?: Record<string, (...n: any[]) => any>;
 };
 

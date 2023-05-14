@@ -93,6 +93,7 @@ Deno.test("should throw error on unknown binary operator", () => {
       eval_ast({
         type: "BinaryOp",
         payload: {
+          // deno-lint-ignore no-explicit-any
           op: "?" as any,
           lhs: { type: "Symbol", payload: { value: "2" } },
           rhs: { type: "Symbol", payload: { value: "5" } },
@@ -122,6 +123,7 @@ Deno.test("should throw error on unknown unary operator", () => {
       eval_ast({
         type: "UnaryOp",
         payload: {
+          // deno-lint-ignore no-explicit-any
           op: "?" as any,
           operand: { type: "Symbol", payload: { value: "1" } },
         },
