@@ -1,4 +1,4 @@
-import { ASTNode } from "./create_node.ts";
+import { ASTNode } from "./create_ast_node.ts";
 import { Context } from "./parser.ts";
 
 export function eval_ast(ast_node: ASTNode, context = {} as Context): any {

@@ -1,9 +1,12 @@
 import parser from "./parser/parser.ts";
 
 console.log(
-  parser("34 + 35 + Math.random()", {
+  parser("rand() + x", {
+    vars: {
+      x: 10,
+    },
     fns: {
-      "Math.random": () => 1,
+      "rand": () => Math.ceil(Math.random() * 10),
     },
   }),
 );
