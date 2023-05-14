@@ -8,7 +8,9 @@ export type ASTNode =
   | { type: "Symbol"; payload: { value: string } };
 
 export function create_ast_node(l: Lexer, prec = 0): ASTNode {
-  if (prec >= 2) {
+  let is_primary = prec >= Object.keys(OPS_BINARY).length;
+
+  if (is_primary) {
     let token = l.next();
 
     if (!token) {
@@ -51,7 +53,7 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
       }
 
       if (token_next === null) {
-        throw TypeError("Unexpected end of input");
+        throw new TypeError("Unexpected end of input");
       }
 
       l.unnext();
@@ -64,12 +66,12 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
       }
 
       if (token_next !== ")") {
-        throw TypeError(`Expected ')' but got '${token_next}'`);
+        throw new TypeError(`Expected ')' but got '${token_next}'`);
       }
 
       return { type: "FunctionCall", payload: { name: token, args: args } };
     } else {
-      if (token_next) {
+      if (token_next !== null) {
         l.unnext();
       }
 
