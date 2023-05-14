@@ -7,11 +7,16 @@ export type ParserContext = {
   vars?: Record<string, any>;
   // deno-lint-ignore no-explicit-any
   fns?: Record<string, (...n: any[]) => any>;
+  debug?: boolean;
 };
 
 export function parser(src: string, context?: ParserContext) {
   let l = create_lexer(src);
   let ast = create_ast_node(l);
+
+  if (context?.debug) {
+    console.log(JSON.stringify(ast, null, 2));
+  }
 
   let token = l.next();
   if (token !== null) {

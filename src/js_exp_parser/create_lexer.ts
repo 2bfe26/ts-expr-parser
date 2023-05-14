@@ -9,6 +9,7 @@ export function create_lexer(input: string) {
     unnext: (token: string) => {
       src = token + src;
     },
+
     next: () => {
       src = src.trimStart();
 

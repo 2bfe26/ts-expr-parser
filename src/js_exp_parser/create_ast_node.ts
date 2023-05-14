@@ -2,10 +2,10 @@ import { Lexer } from "./create_lexer.ts";
 import { OP_BINARY, OP_UNARY, OPS_BINARY, OPS_UNARY } from "./eval_ast.ts";
 
 export type ASTNode =
-  | { type: "BinaryOp"; payload: { op: OP_BINARY; lhs: ASTNode; rhs: ASTNode } }
-  | { type: "UnaryOp"; payload: { op: OP_UNARY; operand: ASTNode } }
-  | { type: "FunctionCall"; payload: { name: string; args: ASTNode[] } }
-  | { type: "Symbol"; payload: { value: string } };
+  | { type: "BinaryOp"; value: { op: OP_BINARY; lhs: ASTNode; rhs: ASTNode } }
+  | { type: "UnaryOp"; value: { op: OP_UNARY; operand: ASTNode } }
+  | { type: "FunctionCall"; value: { name: string; args: ASTNode[] } }
+  | { type: "Symbol"; value: string };
 
 export function create_ast_node(l: Lexer, prec = 0): ASTNode {
   // is_primary
@@ -21,7 +21,7 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
     if (token in OPS_UNARY) {
       return {
         type: "UnaryOp",
-        payload: { op: token as OP_UNARY, operand: create_ast_node(l) },
+        value: { op: token as OP_UNARY, operand: create_ast_node(l) },
       };
     }
 
@@ -48,7 +48,7 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
       token_next = l.next();
 
       if (token_next === ")") {
-        return { type: "FunctionCall", payload: { name: token, args: args } };
+        return { type: "FunctionCall", value: { name: token, args: args } };
       }
 
       if (token_next === null) {
@@ -69,13 +69,13 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
         throw new TypeError(`Expected ')' but got '${token_next}'`);
       }
 
-      return { type: "FunctionCall", payload: { name: token, args: args } };
+      return { type: "FunctionCall", value: { name: token, args: args } };
     } else {
       if (token_next !== null) {
         l.unnext(token_next);
       }
 
-      return { type: "Symbol", payload: { value: token } };
+      return { type: "Symbol", value: token };
     }
   }
 
@@ -85,7 +85,7 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
 
   while (op && op in OPS_BINARY && OPS_BINARY[op].prec === prec) {
     let rhs = create_ast_node(l, prec + 1);
-    lhs = { type: "BinaryOp", payload: { op, lhs, rhs } };
+    lhs = { type: "BinaryOp", value: { op, lhs, rhs } };
     op = l.next() as OP_BINARY;
   }
 

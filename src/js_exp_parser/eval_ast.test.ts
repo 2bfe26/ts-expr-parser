@@ -6,20 +6,20 @@ import { eval_ast } from "./eval_ast.ts";
 
 Deno.test("[eval_ast] should evaluate symbol nodes correctly", () => {
   assertEquals(
-    eval_ast({ type: "Symbol", payload: { value: "x" } }, { vars: { x: 2 } }),
+    eval_ast({ type: "Symbol", value: "x" }, { vars: { x: 2 } }),
     2,
   );
 });
 
 Deno.test("[eval_ast] should throw error on undefined variables", () => {
   assertThrows(
-    () => eval_ast({ type: "Symbol", payload: { value: "x" } }),
+    () => eval_ast({ type: "Symbol", value: "x" }),
     Error,
     "Unknown variable x",
   );
 
   assertThrows(
-    () => eval_ast({ type: "Symbol", payload: { value: "Math.PI" } }),
+    () => eval_ast({ type: "Symbol", value: "Math.PI" }),
     Error,
     "Unknown variable Math.PI",
   );
@@ -27,12 +27,12 @@ Deno.test("[eval_ast] should throw error on undefined variables", () => {
 
 Deno.test("[eval_ast] should evaluate number nodes correctly", () => {
   assertEquals(
-    eval_ast({ type: "Symbol", payload: { value: "22" } }),
+    eval_ast({ type: "Symbol", value: "22" }),
     22,
   );
 
   assertEquals(
-    eval_ast({ type: "Symbol", payload: { value: "69" } }),
+    eval_ast({ type: "Symbol", value: "69" }),
     69,
   );
 });
@@ -41,10 +41,10 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
   assertEquals(
     eval_ast({
       type: "BinaryOp",
-      payload: {
+      value: {
         op: "+",
-        lhs: { type: "Symbol", payload: { value: "2" } },
-        rhs: { type: "Symbol", payload: { value: "3" } },
+        lhs: { type: "Symbol", value: "2" },
+        rhs: { type: "Symbol", value: "3" },
       },
     }),
     5,
@@ -53,10 +53,10 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
   assertEquals(
     eval_ast({
       type: "BinaryOp",
-      payload: {
+      value: {
         op: "-",
-        lhs: { type: "Symbol", payload: { value: "3" } },
-        rhs: { type: "Symbol", payload: { value: "3" } },
+        lhs: { type: "Symbol", value: "3" },
+        rhs: { type: "Symbol", value: "3" },
       },
     }),
     0,
@@ -65,10 +65,10 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
   assertEquals(
     eval_ast({
       type: "BinaryOp",
-      payload: {
+      value: {
         op: "/",
-        lhs: { type: "Symbol", payload: { value: "4" } },
-        rhs: { type: "Symbol", payload: { value: "2" } },
+        lhs: { type: "Symbol", value: "4" },
+        rhs: { type: "Symbol", value: "2" },
       },
     }),
     2,
@@ -77,10 +77,10 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
   assertEquals(
     eval_ast({
       type: "BinaryOp",
-      payload: {
+      value: {
         op: "*",
-        lhs: { type: "Symbol", payload: { value: "2" } },
-        rhs: { type: "Symbol", payload: { value: "5" } },
+        lhs: { type: "Symbol", value: "2" },
+        rhs: { type: "Symbol", value: "5" },
       },
     }),
     10,
@@ -92,11 +92,11 @@ Deno.test("[eval_ast] should throw error on unknown binary operator", () => {
     () =>
       eval_ast({
         type: "BinaryOp",
-        payload: {
+        value: {
           // deno-lint-ignore no-explicit-any
           op: "?" as any,
-          lhs: { type: "Symbol", payload: { value: "2" } },
-          rhs: { type: "Symbol", payload: { value: "5" } },
+          lhs: { type: "Symbol", value: "2" },
+          rhs: { type: "Symbol", value: "5" },
         },
       }),
     Error,
@@ -108,9 +108,9 @@ Deno.test("[eval_ast] should evaluate unary operations correctly", () => {
   assertEquals(
     eval_ast({
       type: "UnaryOp",
-      payload: {
+      value: {
         op: "-",
-        operand: { type: "Symbol", payload: { value: "1" } },
+        operand: { type: "Symbol", value: "1" },
       },
     }),
     -1,
@@ -122,10 +122,10 @@ Deno.test("[eval_ast] should throw error on unknown unary operator", () => {
     () =>
       eval_ast({
         type: "UnaryOp",
-        payload: {
+        value: {
           // deno-lint-ignore no-explicit-any
           op: "?" as any,
-          operand: { type: "Symbol", payload: { value: "1" } },
+          operand: { type: "Symbol", value: "1" },
         },
       }),
     Error,
@@ -137,11 +137,11 @@ Deno.test("[eval_ast] should evaluate function calls correctly", () => {
   assertEquals(
     eval_ast({
       type: "FunctionCall",
-      payload: {
+      value: {
         name: "max",
         args: [
-          { type: "Symbol", payload: { value: "2" } },
-          { type: "Symbol", payload: { value: "3" } },
+          { type: "Symbol", value: "2" },
+          { type: "Symbol", value: "3" },
         ],
       },
     }, { fns: { "max": Math.max } }),
@@ -154,11 +154,11 @@ Deno.test("[eval_ast] should throw error on unknown function", () => {
     () =>
       eval_ast({
         type: "FunctionCall",
-        payload: {
+        value: {
           name: "max",
           args: [
-            { type: "Symbol", payload: { value: "2" } },
-            { type: "Symbol", payload: { value: "3" } },
+            { type: "Symbol", value: "2" },
+            { type: "Symbol", value: "3" },
           ],
         },
       }),

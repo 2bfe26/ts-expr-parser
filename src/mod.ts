@@ -1,6 +1,7 @@
 import jep, { ParserContext } from "./js_exp_parser/mod.ts";
 
 let context: ParserContext = {
+  debug: true,
   vars: {
     MAGIC_NUMBER: 3.3,
   },
