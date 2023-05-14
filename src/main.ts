@@ -1,4 +1,4 @@
-import jep, { ParserContext } from "./js_exp_parser/mod.ts";
+import exp_parser, { ParserContext } from "./exp_parser/mod.ts";
 
 let context: ParserContext = {
   debug: true,
@@ -11,4 +11,4 @@ let context: ParserContext = {
   },
 };
 
-console.log(jep("3 - 3 - floor(doubleIt(MAGIC_NUMBER))", context));
+console.log(exp_parser("3 - 3 - floor(doubleIt(MAGIC_NUMBER))", context));
