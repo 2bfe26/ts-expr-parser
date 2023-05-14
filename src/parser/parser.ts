@@ -1,5 +1,5 @@
 import { create_lexer } from "./create_lexer.ts";
-import { create_node } from "./create_node.ts";
+import { create_ast_node } from "./create_ast_node.ts";
 import { eval_ast } from "./eval_ast.ts";
 
 export type Context = {
@@ -7,9 +7,9 @@ export type Context = {
   fns?: { [key: string]: (...args: any[]) => any };
 };
 
-export default function parser(src: string, context: Context) {
+export default function parser(src: string, context?: Context) {
   let l = create_lexer(src);
-  let ast = create_node(l);
+  let ast = create_ast_node(l);
 
   let token = l.next();
   if (token !== null) {
