@@ -2,29 +2,36 @@ import { OPS_BINARY, OPS_UNARY } from "./eval_ast.ts";
 
 export type Lexer = ReturnType<typeof create_lexer>;
 
-export function create_lexer(src: string) {
-  let cursor = 0;
+export function create_lexer(input: string) {
+  let src = input;
 
   return {
-    unnext: () => cursor > 0 && cursor--,
+    unnext: (token: string) => {
+      src = token + src;
+    },
     next: () => {
-      while (is_whitespace(src[cursor])) cursor++;
+      src = src.trimStart();
 
-      if (!src[cursor]) return null;
+      if (!src.length) return null;
 
-      if (is_break_token(src[cursor])) return src[cursor++];
+      if (is_break_token(src[0])) {
+        let token = src[0];
+        src = src.slice(1);
 
-      for (let i = cursor; i < src.length; i++) {
+        return token;
+      }
+
+      for (let i = 0; i < src.length; i++) {
         if (is_break_token(src[i]) || is_whitespace(src[i])) {
-          let token = src.slice(cursor, i);
-          cursor = i;
+          let token = src.slice(0, i);
+          src = src.slice(i);
 
           return token;
         }
       }
 
-      let token = src.slice(cursor, src.length);
-      cursor = src.length;
+      let token = src.slice(0, src.length);
+      src = "";
 
       return token;
     },

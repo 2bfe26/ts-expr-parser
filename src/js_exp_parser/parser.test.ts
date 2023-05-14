@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import parser from "./parser.ts";
+import { parser } from "./parser.ts";
 
 Deno.test("should properly evaluate math expressions", () => {
   assertEquals(parser("2 + 2 + 2"), 6);

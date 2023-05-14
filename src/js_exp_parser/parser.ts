@@ -9,7 +9,7 @@ export type ParserContext = {
   fns?: Record<string, (...n: any[]) => any>;
 };
 
-export default function parser(src: string, context?: ParserContext) {
+export function parser(src: string, context?: ParserContext) {
   let l = create_lexer(src);
   let ast = create_ast_node(l);
 

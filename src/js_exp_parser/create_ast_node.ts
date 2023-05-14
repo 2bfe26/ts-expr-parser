@@ -55,7 +55,8 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
         throw new TypeError("Unexpected end of input");
       }
 
-      l.unnext();
+      l.unnext(token_next);
+
       args.push(create_ast_node(l));
       token_next = l.next();
 
@@ -71,7 +72,7 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
       return { type: "FunctionCall", payload: { name: token, args: args } };
     } else {
       if (token_next !== null) {
-        l.unnext();
+        l.unnext(token_next);
       }
 
       return { type: "Symbol", payload: { value: token } };
@@ -80,16 +81,16 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
 
   let lhs = create_ast_node(l, prec + 1);
 
-  let op = l.next();
+  let op = l.next() as OP_BINARY;
 
-  while (op && OPS_BINARY[op as OP_BINARY].prec === prec) {
+  while (op && op in OPS_BINARY && OPS_BINARY[op].prec === prec) {
     let rhs = create_ast_node(l, prec + 1);
-    lhs = { type: "BinaryOp", payload: { op: op as OP_BINARY, lhs, rhs } };
-    op = l.next();
+    lhs = { type: "BinaryOp", payload: { op, lhs, rhs } };
+    op = l.next() as OP_BINARY;
   }
 
   if (op) {
-    l.unnext();
+    l.unnext(op);
   }
 
   return lhs;

@@ -1,12 +1,13 @@
-import parser from "./parser/parser.ts";
+import jep, { ParserContext } from "./js_exp_parser/mod.ts";
 
-console.log(
-  parser("rand() + x", {
-    vars: {
-      x: 10,
-    },
-    fns: {
-      "rand": () => Math.ceil(Math.random() * 10),
-    },
-  }),
-);
+let context: ParserContext = {
+  vars: {
+    MAGIC_NUMBER: 3.3,
+  },
+  fns: {
+    floor: Math.floor,
+    doubleIt: (n: number) => n * 2,
+  },
+};
+
+console.log(jep("3 - 3 - floor(doubleIt(MAGIC_NUMBER))", context));
