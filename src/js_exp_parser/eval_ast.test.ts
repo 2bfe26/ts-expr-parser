@@ -4,14 +4,14 @@ import {
 } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { eval_ast } from "./eval_ast.ts";
 
-Deno.test("should evaluate symbol nodes correctly", () => {
+Deno.test("[eval_ast] should evaluate symbol nodes correctly", () => {
   assertEquals(
     eval_ast({ type: "Symbol", payload: { value: "x" } }, { vars: { x: 2 } }),
     2,
   );
 });
 
-Deno.test("should throw error on undefined variables", () => {
+Deno.test("[eval_ast] should throw error on undefined variables", () => {
   assertThrows(
     () => eval_ast({ type: "Symbol", payload: { value: "x" } }),
     Error,
@@ -25,7 +25,7 @@ Deno.test("should throw error on undefined variables", () => {
   );
 });
 
-Deno.test("should evaluate number nodes correctly", () => {
+Deno.test("[eval_ast] should evaluate number nodes correctly", () => {
   assertEquals(
     eval_ast({ type: "Symbol", payload: { value: "22" } }),
     22,
@@ -37,7 +37,7 @@ Deno.test("should evaluate number nodes correctly", () => {
   );
 });
 
-Deno.test("should evaluate binary operations correctly", () => {
+Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
   assertEquals(
     eval_ast({
       type: "BinaryOp",
@@ -87,7 +87,7 @@ Deno.test("should evaluate binary operations correctly", () => {
   );
 });
 
-Deno.test("should throw error on unknown binary operator", () => {
+Deno.test("[eval_ast] should throw error on unknown binary operator", () => {
   assertThrows(
     () =>
       eval_ast({
@@ -104,7 +104,7 @@ Deno.test("should throw error on unknown binary operator", () => {
   );
 });
 
-Deno.test("should evaluate unary operations correctly", () => {
+Deno.test("[eval_ast] should evaluate unary operations correctly", () => {
   assertEquals(
     eval_ast({
       type: "UnaryOp",
@@ -117,7 +117,7 @@ Deno.test("should evaluate unary operations correctly", () => {
   );
 });
 
-Deno.test("should throw error on unknown unary operator", () => {
+Deno.test("[eval_ast] should throw error on unknown unary operator", () => {
   assertThrows(
     () =>
       eval_ast({
@@ -133,7 +133,7 @@ Deno.test("should throw error on unknown unary operator", () => {
   );
 });
 
-Deno.test("should evaluate function calls correctly", () => {
+Deno.test("[eval_ast] should evaluate function calls correctly", () => {
   assertEquals(
     eval_ast({
       type: "FunctionCall",
@@ -149,7 +149,7 @@ Deno.test("should evaluate function calls correctly", () => {
   );
 });
 
-Deno.test("should throw error on unknown function", () => {
+Deno.test("[eval_ast] should throw error on unknown function", () => {
   assertThrows(
     () =>
       eval_ast({

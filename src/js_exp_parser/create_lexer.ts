@@ -22,7 +22,7 @@ export function create_lexer(input: string) {
       }
 
       for (let i = 0; i < src.length; i++) {
-        if (is_break_token(src[i]) || is_whitespace(src[i])) {
+        if (is_break_token(src[i]) || /\s/.test(src[i])) {
           let token = src.slice(0, i);
           src = src.slice(i);
 
@@ -36,10 +36,6 @@ export function create_lexer(input: string) {
       return token;
     },
   };
-}
-
-export function is_whitespace(char: string) {
-  return /\s/.test(char);
 }
 
 export function is_break_token(char: string) {
