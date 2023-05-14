@@ -1,7 +1,10 @@
 import { ASTNode } from "./create_ast_node.ts";
-import { Context } from "./parser.ts";
+import { ParserContext } from "./parser.ts";
 
-export function eval_ast(ast_node: ASTNode, context = {} as Context): any {
+export function eval_ast(
+  ast_node: ASTNode,
+  context = {} as ParserContext,
+): any {
   switch (ast_node.type) {
     case "Symbol":
       if (isNaN(Number(ast_node.payload.value))) {

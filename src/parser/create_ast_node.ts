@@ -8,9 +8,8 @@ export type ASTNode =
   | { type: "Symbol"; payload: { value: string } };
 
 export function create_ast_node(l: Lexer, prec = 0): ASTNode {
-  let is_primary = prec >= Object.keys(OPS_BINARY).length;
-
-  if (is_primary) {
+  // is_primary
+  if (prec >= 2) {
     let token = l.next();
 
     if (!token) {
@@ -81,15 +80,15 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
 
   let lhs = create_ast_node(l, prec + 1);
 
-  let op = l.next() as OP_BINARY;
+  let op = l.next();
+
+  while (op && OPS_BINARY[op as OP_BINARY].prec === prec) {
+    let rhs = create_ast_node(l, prec + 1);
+    lhs = { type: "BinaryOp", payload: { op: op as OP_BINARY, lhs, rhs } };
+    op = l.next();
+  }
 
   if (op) {
-    if (op in OPS_BINARY && OPS_BINARY[op].prec === prec) {
-      let rhs = create_ast_node(l, prec);
-
-      return { type: "BinaryOp", payload: { op, lhs, rhs } };
-    }
-
     l.unnext();
   }
 
