@@ -6,7 +6,7 @@ export function create_lexer(src: string) {
   let cursor = 0;
 
   return {
-    unnext: () => cursor--,
+    unnext: () => cursor > 0 && cursor--,
     next: () => {
       while (is_whitespace(src[cursor])) cursor++;
 
