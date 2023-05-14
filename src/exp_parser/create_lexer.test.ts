@@ -95,6 +95,14 @@ Deno.test("[create_lexer] unnext should return index of before a word", () => {
   assertEquals(sut.next(), "Math.ceil");
 });
 
+Deno.test("[create_lexer] should handle strings properly", () => {
+  let sut = create_lexer("2 + 'oi'");
+
+  assertEquals(sut.next(), "2");
+  assertEquals(sut.next(), "+");
+  assertEquals(sut.next(), "'oi'");
+});
+
 Deno.test("[is_break_token] should return true if is a break token", () => {
   assertEquals(is_break_token("+"), true);
   assertEquals(is_break_token("-"), true);

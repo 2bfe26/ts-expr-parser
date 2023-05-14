@@ -6,8 +6,6 @@
 
 ### Todo
 
-- [ ] FEAT: add suport for object literals "{}"
-- [ ] FEAT: add suport for lists "[]"
 - [ ] TEST: add tests for create_ast_node, parser
 - [ ] TEST: archive 100% coverage
 - [ ] FEAT: Custom errors that point into input code

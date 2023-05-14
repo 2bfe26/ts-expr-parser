@@ -5,7 +5,9 @@ export type ASTNode =
   | { type: "BinaryOp"; value: { op: OP_BINARY; lhs: ASTNode; rhs: ASTNode } }
   | { type: "UnaryOp"; value: { op: OP_UNARY; operand: ASTNode } }
   | { type: "FunctionCall"; value: { name: string; args: ASTNode[] } }
-  | { type: "Symbol"; value: string };
+  | { type: "List"; value: ASTNode[] }
+  | { type: "Symbol"; value: string }
+  | { type: "StringLiteral"; value: string };
 
 export function create_ast_node(l: Lexer, prec = 0): ASTNode {
   // is_primary
@@ -16,6 +18,40 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
       throw new TypeError(
         "Expected primary expression but reached the end of the input",
       );
+    }
+
+    if (token.startsWith("'")) {
+      return { type: "StringLiteral", value: token };
+    }
+
+    if (token === "[") {
+      let elements = [] as ASTNode[];
+
+      token = l.next();
+
+      if (token === "]") {
+        return { type: "List", value: [] };
+      }
+
+      if (token === null) {
+        throw new TypeError("Unexpected end of input");
+      }
+
+      l.unnext(token);
+
+      elements.push(create_ast_node(l));
+      token = l.next();
+
+      while (token == ",") {
+        elements.push(create_ast_node(l));
+        token = l.next();
+      }
+
+      if (token !== "]") {
+        throw new TypeError(`Expected ']' but got '${token}'`);
+      }
+
+      return { type: "List", value: elements };
     }
 
     if (token in OPS_UNARY) {

@@ -22,6 +22,17 @@ export function create_lexer(input: string) {
         return token;
       }
 
+      if (src[0] === "'") {
+        for (let i = 1; i < src.length; i++) {
+          if (src[i] === "'") {
+            let token = src.slice(0, i + 1);
+            src = src.slice(i + 1);
+
+            return token;
+          }
+        }
+      }
+
       for (let i = 0; i < src.length; i++) {
         if (is_break_token(src[i]) || /\s/.test(src[i])) {
           let token = src.slice(0, i);
@@ -40,7 +51,7 @@ export function create_lexer(input: string) {
 }
 
 export function is_break_token(char: string) {
-  let syntax = ["(", ")", ","];
+  let syntax = ["(", ")", ",", "[", "]"];
 
   return char in OPS_BINARY || char in OPS_UNARY || syntax.includes(char);
 }

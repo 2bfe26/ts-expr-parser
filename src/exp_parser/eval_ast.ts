@@ -6,7 +6,7 @@ export function eval_ast(node: ASTNode, context = {} as ParserContext): any {
   switch (node.type) {
     case "Symbol":
       if (isNaN(Number(node.value))) {
-        if (!context?.vars?.[node.value]) {
+        if (typeof context?.vars?.[node.value] === "undefined") {
           throw new Error(`Unknown variable ${node.value}`);
         }
 
@@ -14,6 +14,12 @@ export function eval_ast(node: ASTNode, context = {} as ParserContext): any {
       }
 
       return Number(node.value);
+
+    case "StringLiteral":
+      return node.value.slice(1, node.value.length - 1);
+
+    case "List":
+      return node.value.map((v) => eval_ast(v, context));
 
     case "UnaryOp":
       if (!(node.value.op in OPS_UNARY)) {
