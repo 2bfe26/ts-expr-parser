@@ -20,8 +20,8 @@ export function create_ast_node(l: Lexer, prec = 0): ASTNode {
       );
     }
 
-    if (token.startsWith("'")) {
-      return { type: "StringLiteral", value: token };
+    if (token.startsWith('"')) {
+      return { type: "StringLiteral", value: token.slice(1, token.length - 1) };
     }
 
     if (token === "[") {

@@ -1,7 +1,6 @@
 import { ASTNode } from "./create_ast_node.ts";
 import { ParserContext } from "./parser.ts";
 
-// deno-lint-ignore no-explicit-any
 export function eval_ast(node: ASTNode, context = {} as ParserContext): any {
   switch (node.type) {
     case "Symbol":
@@ -16,7 +15,7 @@ export function eval_ast(node: ASTNode, context = {} as ParserContext): any {
       return Number(node.value);
 
     case "StringLiteral":
-      return node.value.slice(1, node.value.length - 1);
+      return node.value;
 
     case "List":
       return node.value.map((v) => eval_ast(v, context));
@@ -51,7 +50,6 @@ export function eval_ast(node: ASTNode, context = {} as ParserContext): any {
       );
 
     default:
-      // deno-lint-ignore no-explicit-any
       throw new Error(`Unknown ASTNode type ${(node as any).type}`);
   }
 }

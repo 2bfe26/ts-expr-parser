@@ -2,7 +2,7 @@
   "lint": {
     "rules": {
       "tags": ["recommended"],
-      "exclude": ["prefer-const"]
+      "exclude": ["prefer-const", "no-explicit-any"]
     }
   }
 }

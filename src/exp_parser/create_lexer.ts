@@ -22,9 +22,9 @@ export function create_lexer(input: string) {
         return token;
       }
 
-      if (src[0] === "'") {
+      if (src[0] === '"') {
         for (let i = 1; i < src.length; i++) {
-          if (src[i] === "'") {
+          if (src[i] === '"') {
             let token = src.slice(0, i + 1);
             src = src.slice(i + 1);
 
