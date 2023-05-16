@@ -17,15 +17,11 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
     let token = l.next();
 
     if (!token) {
-      throw new TypeError(
-        "Expected primary expression but reached the end of the input",
-      );
+      throw new TypeError("Expected primary expression but reached the end of the input");
     }
 
     if (token.type === "ParenEnd") {
-      throw new TypeError(
-        "No primary expression starts with )",
-      );
+      throw new TypeError("No primary expression starts with )");
     }
 
     if (token.value in OPS_UNARY) {
@@ -47,7 +43,6 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
     let token_next = l.next();
 
     if (token.type === "ParenStart") {
-      console.log("OIi");
       let node = create_node(l);
 
       if (token_next?.type !== "ParenEnd") {
@@ -135,7 +130,8 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
   let op = l.next();
 
   while (
-    op?.type === "Op" && op.value in OPS_BINARY &&
+    op?.type === "Op" &&
+    op.value in OPS_BINARY &&
     OPS_BINARY[op.value].prec === prec
   ) {
     lhs = {

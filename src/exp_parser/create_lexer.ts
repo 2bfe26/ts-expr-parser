@@ -106,7 +106,7 @@ export function is_whitespace(char: string) {
 }
 
 export function is_symbol(char: string) {
-  return char && /[0-9a-zA-Z._]/i.test(char);
+  return char && /[0-9a-zA-Z._!]/i.test(char);
 }
 
 export function is_operator(char: string) {

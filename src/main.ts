@@ -1,8 +1,11 @@
 import exp_parser, { ParserContext } from "./exp_parser/mod.ts";
 
 let std = {
-  "print": (n: any) => console.log(`%c${n}`, "color: blue; font-weight: bold"),
-  "print!": (n: any) => () => std.print(n),
+  "print": (n: any) => {
+    console.log(`%c${n}`, "color: blue; font-weight: bold");
+    return n;
+  },
+  // "print!": (n: any) => () => std.print(n),
   "when": (val: any, cases: any[]) => {
     for (let [k, v] of cases) {
       if (val === k) {

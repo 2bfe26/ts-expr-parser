@@ -42,14 +42,25 @@ export function eval_ast(n: ASTNode, context = {} as ParserContext): any {
     }
 
     case "FunctionCall": {
-      if (!context?.fns?.[n.value.name]) {
+      let should_bind = n.value.name.endsWith("!");
+
+      let name = should_bind
+        ? n.value.name.slice(0, n.value.name.length - 1)
+        : n.value.name;
+
+      if (!context?.fns?.[name]) {
         throw new Error(`Unknown function ${n.value.name}`);
       }
 
-      return context.fns[n.value.name].apply(
-        context.fns,
-        n.value.params.map((p) => eval_ast(p, context)),
-      );
+      return should_bind
+        ? context.fns[name].bind(
+          context.fns,
+          ...n.value.params.map((p) => eval_ast(p, context)),
+        )
+        : context.fns[name].call(
+          context.fns,
+          ...n.value.params.map((p) => eval_ast(p, context)),
+        );
     }
 
     default: {

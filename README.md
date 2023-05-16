@@ -6,12 +6,11 @@
 
 ### Todo
 
-- [ ] TEST: add tests for create_ast_node, parser
-- [ ] TEST: archive 100% coverage
+- [ ] TEST: add tests for create_node
 - [ ] FEAT: Custom errors that point into input code
 
 ### References
 
-- [Tsoding](https://www.youtube.com/watch?v=Yjgh7bfh2FU)
+- [TSoding](https://www.youtube.com/watch?v=Yjgh7bfh2FU)
 - [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
 - [Operator precedence parser](https://en.wikipedia.org/wiki/Operator-precedence_parser)
