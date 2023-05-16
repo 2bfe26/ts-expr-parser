@@ -58,10 +58,6 @@ export function eval_ast(n: ASTNode, context = {} as ParserContext): any {
   }
 }
 
-export type OP_BINARY = keyof typeof OPS_BINARY;
-export type OP_UNARY = keyof typeof OPS_UNARY;
-export type OP = OP_BINARY | OP_UNARY;
-
 export let OPS_BINARY = {
   "+": {
     fn: (lhs: number, rhs: number) => lhs + rhs,
@@ -90,3 +86,9 @@ export let OPS_UNARY = {
     fn: (lhs: number) => -lhs,
   },
 };
+
+export type OpBinary = keyof typeof OPS_BINARY;
+
+export type OpUnary = keyof typeof OPS_UNARY;
+
+export type Op = OpBinary | OpUnary;

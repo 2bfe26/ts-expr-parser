@@ -1,11 +1,11 @@
-import { OP, OPS_BINARY, OPS_UNARY } from "./eval_ast.ts";
+import { Op, OPS_BINARY, OPS_UNARY } from "./eval_ast.ts";
 
 export type Lexer = ReturnType<typeof create_lexer>;
 
 export type Token =
   | { type: "String"; value: string }
   | { type: "Symbol"; value: string }
-  | { type: "Op"; value: OP }
+  | { type: "Op"; value: Op }
   | { type: "ParenStart"; value: "(" }
   | { type: "ParenEnd"; value: ")" }
   | { type: "BracketStart"; value: "[" }
@@ -31,16 +31,21 @@ export function create_lexer(input: string) {
       /**
        * NOTE:
        *  This is probably not the responsibility of the lexer,
-       *  but I find myself immersed in a sea of melancholy, navigating through the treacherous waters
+       *  but I find myself immersed in a sea of melancholy,
+       *  navigating through the treacherous waters
        *  of an unforgivable schedule.
        */
       if (is_string(src[0])) {
         src = src.slice(1);
         let acc = "";
 
-        while (src[0] !== '"') {
+        while (src[0] && src[0] !== '"') {
           acc += src[0];
           src = src.slice(1);
+        }
+
+        if (src[0] !== '"') {
+          throw new TypeError("String is not properly closed by double quote");
         }
 
         src = src.slice(1);
@@ -74,7 +79,7 @@ export function create_lexer(input: string) {
       }
 
       if (is_operator(src[0])) {
-        let value = src[0] as OP;
+        let value = src[0] as Op;
         src = src.slice(1);
 
         return { type: "Op", value };

@@ -1,9 +1,9 @@
 import { Lexer } from "./create_lexer.ts";
-import { OP_BINARY, OP_UNARY, OPS_BINARY, OPS_UNARY } from "./eval_ast.ts";
+import { OpBinary, OPS_BINARY, OPS_UNARY, OpUnary } from "./eval_ast.ts";
 
 export type ASTNode =
-  | { type: "BinaryOp"; value: { op: OP_BINARY; lhs: ASTNode; rhs: ASTNode } }
-  | { type: "UnaryOp"; value: { op: OP_UNARY; operand: ASTNode } }
+  | { type: "BinaryOp"; value: { op: OpBinary; lhs: ASTNode; rhs: ASTNode } }
+  | { type: "UnaryOp"; value: { op: OpUnary; operand: ASTNode } }
   | { type: "FunctionCall"; value: { name: string; params: ASTNode[] } }
   | { type: "List"; value: ASTNode[] }
   | { type: "Variable"; value: string }
@@ -31,7 +31,7 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
     if (token.value in OPS_UNARY) {
       return {
         type: "UnaryOp",
-        value: { op: token.value as OP_UNARY, operand: create_node(l) },
+        value: { op: token.value as OpUnary, operand: create_node(l) },
       };
     }
 
