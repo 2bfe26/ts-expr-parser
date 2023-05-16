@@ -35,7 +35,7 @@ export function create_lexer(input: string) {
        *  navigating through the treacherous waters
        *  of an unforgivable schedule.
        */
-      if (is_string(src[0])) {
+      if (src[0].startsWith('"')) {
         src = src.slice(1);
         let acc = "";
 
@@ -97,16 +97,12 @@ export function create_lexer(input: string) {
   };
 }
 
-export function is_string(char: string) {
-  return char.startsWith('"');
-}
-
 export function is_whitespace(char: string) {
   return /\s/.test(char);
 }
 
 export function is_symbol(char: string) {
-  return char && /[0-9a-zA-Z._!]/i.test(char);
+  return char ? /[0-9a-zA-Z._!]/i.test(char) : false;
 }
 
 export function is_operator(char: string) {

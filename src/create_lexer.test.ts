@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { create_lexer } from "./create_lexer.ts";
+import { create_lexer, is_operator, is_symbol, is_whitespace } from "./create_lexer.ts";
 
 Deno.test("[unit] should properly iterate over the given source", () => {
   let sut = create_lexer("1 + 2 * 3");
@@ -101,4 +101,38 @@ Deno.test("[unit] should handle strings properly", () => {
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
   assertEquals(sut.next(), { type: "Op", value: "+" });
   assertEquals(sut.next(), { type: "String", value: "oi" });
+});
+
+Deno.test("[unit] should return true if input is whitespace", () => {
+  assertEquals(is_whitespace(undefined as any), false);
+  assertEquals(is_whitespace(" "), true);
+  assertEquals(is_whitespace("  "), true);
+  assertEquals(is_whitespace("f"), false);
+});
+
+Deno.test("[unit] should return true if input is a arithmetic operator", () => {
+  assertEquals(is_operator(undefined as any), false);
+  assertEquals(is_operator("+"), true);
+  assertEquals(is_operator("-"), true);
+  assertEquals(is_operator("/"), true);
+  assertEquals(is_operator("*"), true);
+  assertEquals(is_operator("**"), true);
+  assertEquals(is_operator("%"), true);
+  assertEquals(is_operator(" "), false);
+  assertEquals(is_operator("s"), false);
+});
+
+Deno.test("[unit] should return true if input is Symbol", () => {
+  assertEquals(is_symbol(undefined as any), false);
+  assertEquals(is_symbol("+"), false);
+  assertEquals(is_symbol("-"), false);
+  assertEquals(is_symbol("a"), true);
+  assertEquals(is_symbol("b"), true);
+  assertEquals(is_symbol("c"), true);
+  assertEquals(is_symbol("1"), true);
+  assertEquals(is_symbol("2"), true);
+  assertEquals(is_symbol("3"), true);
+  assertEquals(is_symbol("."), true);
+  assertEquals(is_symbol("!"), true);
+  assertEquals(is_symbol("_"), true);
 });
