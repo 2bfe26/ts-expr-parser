@@ -164,3 +164,11 @@ Deno.test("[unit] should throw error on unknown function", () => {
     "Unknown function max",
   );
 });
+
+Deno.test("[unit] should throw error when unknown AST node is provided", () => {
+  assertThrows(
+    () => eval_ast({ type: "Whoa" as any, value: ":O" }),
+    Error,
+    "Unknown ASTNode type Whoa",
+  );
+});
