@@ -5,7 +5,6 @@ let std = {
     console.log(`%c${n}`, "color: blue; font-weight: bold");
     return n;
   },
-  // "print!": (n: any) => () => std.print(n),
   "when": (val: any, cases: any[]) => {
     for (let [k, v] of cases) {
       if (val === k) {
