@@ -1,4 +1,7 @@
-import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
+import {
+  assertEquals,
+  assertThrows,
+} from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { parser, ParserContext } from "./parser.ts";
 
 Deno.test("[integration] should properly evaluate math expressions", () => {
@@ -57,5 +60,13 @@ Deno.test("[integration] should properly evaluate math expressions with nested f
   assertEquals(
     parser("10 / 2 * get_ten() + double_it(get_ten())", context),
     70,
+  );
+});
+
+Deno.test("[integration] should throw if after AST creation are remaining tokens in the lexer", () => {
+  assertThrows(
+    () => parser("2 + 2 f"),
+    Error,
+    "Unexpected token f",
   );
 });

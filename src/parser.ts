@@ -13,7 +13,7 @@ export function parser(src: string, context?: ParserContext) {
 
   let token = l.next();
   if (token !== null) {
-    throw new TypeError(`Unexpected token '${token.value}'`);
+    throw new TypeError(`Unexpected token ${token.value}`);
   }
 
   return eval_ast(ast, context);
