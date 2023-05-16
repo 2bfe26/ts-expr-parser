@@ -49,7 +49,7 @@ export function eval_ast(n: ASTNode, context = {} as ParserContext): any {
         : n.value.name;
 
       if (!context?.fns?.[name]) {
-        throw new Error(`Unknown function ${n.value.name}`);
+        throw new Error(`Unknown function ${name}`);
       }
 
       return should_bind

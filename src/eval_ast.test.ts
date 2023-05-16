@@ -85,6 +85,30 @@ Deno.test("[unit] should evaluate binary operations correctly", () => {
     }),
     10,
   );
+
+  assertEquals(
+    eval_ast({
+      type: "BinaryOp",
+      value: {
+        op: "%",
+        lhs: { type: "NumberLiteral", value: 10 },
+        rhs: { type: "NumberLiteral", value: 3 },
+      },
+    }),
+    1,
+  );
+
+  assertEquals(
+    eval_ast({
+      type: "BinaryOp",
+      value: {
+        op: "**",
+        lhs: { type: "NumberLiteral", value: 2 },
+        rhs: { type: "NumberLiteral", value: 3 },
+      },
+    }),
+    8,
+  );
 });
 
 Deno.test("[unit] should throw error on unknown binary operator", () => {
@@ -165,6 +189,22 @@ Deno.test("[unit] should evaluate function calls correctly", () => {
     }, { fns: { "max": Math.max } }),
     3,
   );
+});
+
+Deno.test("[unit] should evaluate function binds (!) correctly", () => {
+  let fn = eval_ast({
+    type: "FunctionCall",
+    value: {
+      name: "max!",
+      params: [
+        { type: "NumberLiteral", value: 2 },
+        { type: "NumberLiteral", value: 3 },
+      ],
+    },
+  }, { fns: { "max": Math.max } });
+
+  assertEquals(typeof fn, "function");
+  assertEquals(fn(), 3);
 });
 
 Deno.test("[unit] should throw error on unknown function", () => {

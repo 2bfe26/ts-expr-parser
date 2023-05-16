@@ -1,4 +1,7 @@
-import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
+import {
+  assertEquals,
+  assertThrows,
+} from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { create_lexer, is_operator, is_symbol, is_whitespace } from "./create_lexer.ts";
 
 Deno.test("[unit] should properly iterate over the given source", () => {
@@ -81,26 +84,36 @@ Deno.test("[unit] should handle nested functions properly", () => {
   assertEquals(sut.next(), { type: "ParenEnd", value: ")" });
 });
 
-Deno.test("[unit] unnext should return index of before a word", () => {
-  let sut = create_lexer("2 * Math.ceil(Math.random())");
+Deno.test("[unit] unnext should handle strings properly", () => {
+  let sut = create_lexer('"hello" + "world"');
 
-  assertEquals(sut.next(), { type: "Symbol", value: "2" });
-  assertEquals(sut.next(), { type: "Op", value: "*" });
-  assertEquals(sut.next(), { type: "Symbol", value: "Math.ceil" });
-  assertEquals(sut.next(), { type: "ParenStart", value: "(" });
+  assertEquals(sut.next(), { type: "String", value: "hello" });
+  assertEquals(sut.next(), { type: "Op", value: "+" });
+  assertEquals(sut.next(), { type: "String", value: "world" });
 
-  sut.unnext({ type: "ParenStart", value: "(" });
-  sut.unnext({ type: "Symbol", value: "Math.ceil" });
+  sut.unnext({ type: "String", value: "world" });
 
-  assertEquals(sut.next(), { type: "Symbol", value: "Math.ceil" });
+  assertEquals(sut.next(), { type: "String", value: "world" });
 });
 
-Deno.test("[unit] should handle strings properly", () => {
-  let sut = create_lexer('2 + "oi"');
+Deno.test("[unit] should throw a error when encounter a unclosed string", () => {
+  let sut = create_lexer('"hello + 3 ');
 
+  assertThrows(
+    () => sut.next(),
+    Error,
+    "String is not properly closed by double quote",
+  );
+});
+
+Deno.test("[unit] should handle lists properly", () => {
+  let sut = create_lexer("[1, 2]");
+
+  assertEquals(sut.next(), { type: "BracketStart", value: "[" });
+  assertEquals(sut.next(), { type: "Symbol", value: "1" });
+  assertEquals(sut.next(), { type: "Comma", value: "," });
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
-  assertEquals(sut.next(), { type: "Op", value: "+" });
-  assertEquals(sut.next(), { type: "String", value: "oi" });
+  assertEquals(sut.next(), { type: "BracketEnd", value: "]" });
 });
 
 Deno.test("[unit] should return true if input is whitespace", () => {
