@@ -1,4 +1,4 @@
-import exp_parser, { ParserContext } from "./exp_parser/mod.ts";
+import exp_parser, { ParserContext } from "./src/mod.ts";
 
 let std = {
   "print": (n: any) => {
@@ -20,7 +20,7 @@ let context: ParserContext = {
   fns: std,
 };
 
-let data = Deno.readFileSync("data.txt");
+let data = Deno.readFileSync("sample.txt");
 let decoder = new TextDecoder("utf-8");
 
 exp_parser(decoder.decode(data), context);

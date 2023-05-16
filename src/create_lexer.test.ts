@@ -1,7 +1,7 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { create_lexer } from "./create_lexer.ts";
 
-Deno.test("[create_lexer] should properly iterate over the given source", () => {
+Deno.test("[unit] should properly iterate over the given source", () => {
   let sut = create_lexer("1 + 2 * 3");
 
   assertEquals(sut.next(), { type: "Symbol", value: "1" });
@@ -15,7 +15,7 @@ Deno.test("[create_lexer] should properly iterate over the given source", () => 
   assertEquals(sut.next(), { type: "Symbol", value: "1" });
 });
 
-Deno.test("[create_lexer] should ignore whitespace", () => {
+Deno.test("[unit] should ignore whitespace", () => {
   let sut = create_lexer("      1      + 2  * 3       ");
 
   assertEquals(sut.next(), { type: "Symbol", value: "1" });
@@ -23,7 +23,7 @@ Deno.test("[create_lexer] should ignore whitespace", () => {
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
 });
 
-Deno.test("[create_lexer] should handle decimal numbers properly", () => {
+Deno.test("[unit] should handle decimal numbers properly", () => {
   let sut = create_lexer("1.3 + 2.33332 * 1");
 
   assertEquals(sut.next(), { type: "Symbol", value: "1.3" });
@@ -31,7 +31,7 @@ Deno.test("[create_lexer] should handle decimal numbers properly", () => {
   assertEquals(sut.next(), { type: "Symbol", value: "2.33332" });
 });
 
-Deno.test("[create_lexer] should handle variables properly", () => {
+Deno.test("[unit] should handle variables properly", () => {
   let sut = create_lexer("2 * PI");
 
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
@@ -39,7 +39,7 @@ Deno.test("[create_lexer] should handle variables properly", () => {
   assertEquals(sut.next(), { type: "Symbol", value: "PI" });
 });
 
-Deno.test("[create_lexer] should handle namespaced variables properly", () => {
+Deno.test("[unit] should handle namespaced variables properly", () => {
   let sut = create_lexer("2 * Math.PI");
 
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
@@ -47,7 +47,7 @@ Deno.test("[create_lexer] should handle namespaced variables properly", () => {
   assertEquals(sut.next(), { type: "Symbol", value: "Math.PI" });
 });
 
-Deno.test("[create_lexer] should handle functions without arguments properly", () => {
+Deno.test("[unit] should handle functions without arguments properly", () => {
   let sut = create_lexer("2 * Math.random()");
 
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
@@ -57,7 +57,7 @@ Deno.test("[create_lexer] should handle functions without arguments properly", (
   assertEquals(sut.next(), { type: "ParenEnd", value: ")" });
 });
 
-Deno.test("[create_lexer] should handle functions with arguments properly", () => {
+Deno.test("[unit] should handle functions with arguments properly", () => {
   let sut = create_lexer("2 * Math.ceil(3.2)");
 
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
@@ -68,7 +68,7 @@ Deno.test("[create_lexer] should handle functions with arguments properly", () =
   assertEquals(sut.next(), { type: "ParenEnd", value: ")" });
 });
 
-Deno.test("[create_lexer] should handle nested functions properly", () => {
+Deno.test("[unit] should handle nested functions properly", () => {
   let sut = create_lexer("2 * Math.ceil(Math.random())");
 
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
@@ -81,7 +81,7 @@ Deno.test("[create_lexer] should handle nested functions properly", () => {
   assertEquals(sut.next(), { type: "ParenEnd", value: ")" });
 });
 
-Deno.test("[create_lexer] unnext should return index of before a word", () => {
+Deno.test("[unit] unnext should return index of before a word", () => {
   let sut = create_lexer("2 * Math.ceil(Math.random())");
 
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
@@ -95,7 +95,7 @@ Deno.test("[create_lexer] unnext should return index of before a word", () => {
   assertEquals(sut.next(), { type: "Symbol", value: "Math.ceil" });
 });
 
-Deno.test("[create_lexer] should handle strings properly", () => {
+Deno.test("[unit] should handle strings properly", () => {
   let sut = create_lexer('2 + "oi"');
 
   assertEquals(sut.next(), { type: "Symbol", value: "2" });
