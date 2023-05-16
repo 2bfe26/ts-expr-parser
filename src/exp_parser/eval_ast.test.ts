@@ -6,20 +6,20 @@ import { eval_ast } from "./eval_ast.ts";
 
 Deno.test("[eval_ast] should evaluate symbol nodes correctly", () => {
   assertEquals(
-    eval_ast({ type: "Symbol", value: "x" }, { vars: { x: 2 } }),
+    eval_ast({ type: "Variable", value: "x" }, { vars: { x: 2 } }),
     2,
   );
 });
 
 Deno.test("[eval_ast] should throw error on undefined variables", () => {
   assertThrows(
-    () => eval_ast({ type: "Symbol", value: "x" }),
+    () => eval_ast({ type: "Variable", value: "x" }),
     Error,
     "Unknown variable x",
   );
 
   assertThrows(
-    () => eval_ast({ type: "Symbol", value: "Math.PI" }),
+    () => eval_ast({ type: "Variable", value: "Math.PI" }),
     Error,
     "Unknown variable Math.PI",
   );
@@ -27,12 +27,12 @@ Deno.test("[eval_ast] should throw error on undefined variables", () => {
 
 Deno.test("[eval_ast] should evaluate number nodes correctly", () => {
   assertEquals(
-    eval_ast({ type: "Symbol", value: "22" }),
+    eval_ast({ type: "NumberLiteral", value: 22 }),
     22,
   );
 
   assertEquals(
-    eval_ast({ type: "Symbol", value: "69" }),
+    eval_ast({ type: "NumberLiteral", value: 69 }),
     69,
   );
 });
@@ -43,8 +43,8 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
       type: "BinaryOp",
       value: {
         op: "+",
-        lhs: { type: "Symbol", value: "2" },
-        rhs: { type: "Symbol", value: "3" },
+        lhs: { type: "NumberLiteral", value: 2 },
+        rhs: { type: "NumberLiteral", value: 3 },
       },
     }),
     5,
@@ -55,8 +55,8 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
       type: "BinaryOp",
       value: {
         op: "-",
-        lhs: { type: "Symbol", value: "3" },
-        rhs: { type: "Symbol", value: "3" },
+        lhs: { type: "NumberLiteral", value: 3 },
+        rhs: { type: "NumberLiteral", value: 3 },
       },
     }),
     0,
@@ -67,8 +67,8 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
       type: "BinaryOp",
       value: {
         op: "/",
-        lhs: { type: "Symbol", value: "4" },
-        rhs: { type: "Symbol", value: "2" },
+        lhs: { type: "NumberLiteral", value: 4 },
+        rhs: { type: "NumberLiteral", value: 2 },
       },
     }),
     2,
@@ -79,8 +79,8 @@ Deno.test("[eval_ast] should evaluate binary operations correctly", () => {
       type: "BinaryOp",
       value: {
         op: "*",
-        lhs: { type: "Symbol", value: "2" },
-        rhs: { type: "Symbol", value: "5" },
+        lhs: { type: "NumberLiteral", value: 2 },
+        rhs: { type: "NumberLiteral", value: 5 },
       },
     }),
     10,
@@ -94,8 +94,8 @@ Deno.test("[eval_ast] should throw error on unknown binary operator", () => {
         type: "BinaryOp",
         value: {
           op: "?" as any,
-          lhs: { type: "Symbol", value: "2" },
-          rhs: { type: "Symbol", value: "5" },
+          lhs: { type: "NumberLiteral", value: 2 },
+          rhs: { type: "NumberLiteral", value: 5 },
         },
       }),
     Error,
@@ -109,7 +109,7 @@ Deno.test("[eval_ast] should evaluate unary operations correctly", () => {
       type: "UnaryOp",
       value: {
         op: "-",
-        operand: { type: "Symbol", value: "1" },
+        operand: { type: "NumberLiteral", value: 1 },
       },
     }),
     -1,
@@ -123,7 +123,7 @@ Deno.test("[eval_ast] should throw error on unknown unary operator", () => {
         type: "UnaryOp",
         value: {
           op: "?" as any,
-          operand: { type: "Symbol", value: "1" },
+          operand: { type: "NumberLiteral", value: 1 },
         },
       }),
     Error,
@@ -137,9 +137,9 @@ Deno.test("[eval_ast] should evaluate function calls correctly", () => {
       type: "FunctionCall",
       value: {
         name: "max",
-        args: [
-          { type: "Symbol", value: "2" },
-          { type: "Symbol", value: "3" },
+        params: [
+          { type: "NumberLiteral", value: 2 },
+          { type: "NumberLiteral", value: 3 },
         ],
       },
     }, { fns: { "max": Math.max } }),
@@ -154,9 +154,9 @@ Deno.test("[eval_ast] should throw error on unknown function", () => {
         type: "FunctionCall",
         value: {
           name: "max",
-          args: [
-            { type: "Symbol", value: "2" },
-            { type: "Symbol", value: "3" },
+          params: [
+            { type: "NumberLiteral", value: 2 },
+            { type: "NumberLiteral", value: 3 },
           ],
         },
       }),

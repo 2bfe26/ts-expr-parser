@@ -1,6 +1,6 @@
 print(
   when(shape, [
-    ["circle", PI * (value * value)],
+    ["circle", PI * value * value],
     ["square", value * value]
   ])
 )

@@ -1,4 +1,9 @@
 {
+  "fmt": {
+    "options": {
+      "lineWidth": 90
+    }
+  },
   "lint": {
     "rules": {
       "tags": ["recommended"],

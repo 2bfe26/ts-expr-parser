@@ -1,61 +1,66 @@
-import { ASTNode } from "./create_ast_node.ts";
+import { ASTNode } from "./create_node.ts";
 import { ParserContext } from "./parser.ts";
 
-export function eval_ast(node: ASTNode, context = {} as ParserContext): any {
-  switch (node.type) {
-    case "Symbol":
-      if (isNaN(Number(node.value))) {
-        if (typeof context?.vars?.[node.value] === "undefined") {
-          throw new Error(`Unknown variable ${node.value}`);
-        }
+export function eval_ast(n: ASTNode, context = {} as ParserContext): any {
+  switch (n.type) {
+    case "NumberLiteral":
+    case "StringLiteral": {
+      return n.value;
+    }
 
-        return context.vars[node.value];
+    case "List": {
+      return n.value.map((v) => eval_ast(v, context));
+    }
+
+    case "Variable": {
+      if (typeof context?.vars?.[n.value] === "undefined") {
+        throw new Error(`Unknown variable ${n.value}`);
       }
 
-      return Number(node.value);
+      return context.vars[n.value];
+    }
 
-    case "StringLiteral":
-      return node.value;
-
-    case "List":
-      return node.value.map((v) => eval_ast(v, context));
-
-    case "UnaryOp":
-      if (!(node.value.op in OPS_UNARY)) {
-        throw new Error(`Unknown UnaryOp operator ${node.value.op}`);
+    case "UnaryOp": {
+      if (!(n.value.op in OPS_UNARY)) {
+        throw new Error(`Unknown UnaryOp operator ${n.value.op}`);
       }
 
-      return OPS_UNARY[node.value.op].fn(
-        eval_ast(node.value.operand, context),
+      return OPS_UNARY[n.value.op].fn(
+        eval_ast(n.value.operand, context),
       );
+    }
 
-    case "BinaryOp":
-      if (!(node.value.op in OPS_BINARY)) {
-        throw new Error(`Unknown BinaryOp operator ${node.value.op}`);
+    case "BinaryOp": {
+      if (!(n.value.op in OPS_BINARY)) {
+        throw new Error(`Unknown BinaryOp operator ${n.value.op}`);
       }
 
-      return OPS_BINARY[node.value.op].fn(
-        eval_ast(node.value.lhs, context),
-        eval_ast(node.value.rhs, context),
+      return OPS_BINARY[n.value.op].fn(
+        eval_ast(n.value.lhs, context),
+        eval_ast(n.value.rhs, context),
       );
+    }
 
-    case "FunctionCall":
-      if (!context?.fns?.[node.value.name]) {
-        throw new Error(`Unknown function ${node.value.name}`);
+    case "FunctionCall": {
+      if (!context?.fns?.[n.value.name]) {
+        throw new Error(`Unknown function ${n.value.name}`);
       }
 
-      return context.fns[node.value.name].apply(
+      return context.fns[n.value.name].apply(
         context.fns,
-        node.value.args.map((a) => eval_ast(a, context)),
+        n.value.params.map((p) => eval_ast(p, context)),
       );
+    }
 
-    default:
-      throw new Error(`Unknown ASTNode type ${(node as any).type}`);
+    default: {
+      throw new Error(`Unknown ASTNode type ${(n as any).type}`);
+    }
   }
 }
 
 export type OP_BINARY = keyof typeof OPS_BINARY;
 export type OP_UNARY = keyof typeof OPS_UNARY;
+export type OP = OP_BINARY | OP_UNARY;
 
 export let OPS_BINARY = {
   "+": {

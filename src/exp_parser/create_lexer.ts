@@ -1,57 +1,109 @@
-import { OPS_BINARY, OPS_UNARY } from "./eval_ast.ts";
+import { OP, OPS_BINARY, OPS_UNARY } from "./eval_ast.ts";
 
 export type Lexer = ReturnType<typeof create_lexer>;
+
+export type Token =
+  | { type: "String"; value: string }
+  | { type: "Symbol"; value: string }
+  | { type: "Op"; value: OP }
+  | { type: "ParenStart"; value: "(" }
+  | { type: "ParenEnd"; value: ")" }
+  | { type: "BracketStart"; value: "[" }
+  | { type: "BracketEnd"; value: "]" }
+  | { type: "Comma"; value: "," };
 
 export function create_lexer(input: string) {
   let src = input;
 
   return {
-    unnext: (token: string) => {
-      src = token + src;
+    unnext: (token: Token) => {
+      // NOTE: Forgetting to add quotes around the String type token almost gave me an ulcer.
+      let value = token.type === "String" ? `"${token.value}"` : token.value;
+
+      src = value + src;
     },
 
-    next: () => {
+    next: (): Token | null => {
       src = src.trimStart();
 
       if (!src.length) return null;
 
-      if (is_break_token(src[0])) {
-        let token = src[0];
+      /**
+       * NOTE:
+       *  This is probably not the responsibility of the lexer,
+       *  but I find myself immersed in a sea of melancholy, navigating through the treacherous waters
+       *  of an unforgivable schedule.
+       */
+      if (is_string(src[0])) {
+        src = src.slice(1);
+        let acc = "";
+
+        while (src[0] !== '"') {
+          acc += src[0];
+          src = src.slice(1);
+        }
+
         src = src.slice(1);
 
-        return token;
+        return { type: "String", value: acc };
       }
 
-      if (src[0] === '"') {
-        for (let i = 1; i < src.length; i++) {
-          if (src[i] === '"') {
-            let token = src.slice(0, i + 1);
-            src = src.slice(i + 1);
-
-            return token;
-          }
-        }
+      if (src[0] === "(") {
+        src = src.slice(1);
+        return { type: "ParenStart", value: "(" };
       }
 
-      for (let i = 0; i < src.length; i++) {
-        if (is_break_token(src[i]) || /\s/.test(src[i])) {
-          let token = src.slice(0, i);
-          src = src.slice(i);
-
-          return token;
-        }
+      if (src[0] === ")") {
+        src = src.slice(1);
+        return { type: "ParenEnd", value: ")" };
       }
 
-      let token = src.slice(0, src.length);
-      src = "";
+      if (src[0] === "[") {
+        src = src.slice(1);
+        return { type: "BracketStart", value: "[" };
+      }
 
-      return token;
+      if (src[0] === "]") {
+        src = src.slice(1);
+        return { type: "BracketEnd", value: "]" };
+      }
+
+      if (src[0] === ",") {
+        src = src.slice(1);
+        return { type: "Comma", value: "," };
+      }
+
+      if (is_operator(src[0])) {
+        let value = src[0] as OP;
+        src = src.slice(1);
+
+        return { type: "Op", value };
+      }
+
+      let acc = "";
+
+      while (is_symbol(src[0]) && !is_whitespace(src[0])) {
+        acc += src[0];
+        src = src.slice(1);
+      }
+
+      return { type: "Symbol", value: acc };
     },
   };
 }
 
-export function is_break_token(char: string) {
-  let syntax = ["(", ")", ",", "[", "]"];
+export function is_string(char: string) {
+  return char.startsWith('"');
+}
 
-  return char in OPS_BINARY || char in OPS_UNARY || syntax.includes(char);
+export function is_whitespace(char: string) {
+  return /\s/.test(char);
+}
+
+export function is_symbol(char: string) {
+  return char && /[0-9a-zA-Z._]/i.test(char);
+}
+
+export function is_operator(char: string) {
+  return char in OPS_BINARY || char in OPS_UNARY;
 }

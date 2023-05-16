@@ -18,8 +18,7 @@ let context: ParserContext = {
   fns: std,
 };
 
-let decoder = new TextDecoder("utf-8");
 let data = Deno.readFileSync("data.txt");
-let src = decoder.decode(data);
+let decoder = new TextDecoder("utf-8");
 
-exp_parser(src, context);
+exp_parser(decoder.decode(data), context);
