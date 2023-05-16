@@ -116,6 +116,26 @@ Deno.test("[unit] should evaluate unary operations correctly", () => {
   );
 });
 
+Deno.test("[unit] should evaluate lists correctly", () => {
+  assertEquals(
+    eval_ast({
+      type: "List",
+      value: [
+        { type: "NumberLiteral", value: 2 },
+        { type: "NumberLiteral", value: 3 },
+      ],
+    }),
+    [2, 3],
+  );
+});
+
+Deno.test("[unit] should evaluate empty lists correctly", () => {
+  assertEquals(
+    eval_ast({ type: "List", value: [] }),
+    [],
+  );
+});
+
 Deno.test("[unit] should throw error on unknown unary operator", () => {
   assertThrows(
     () =>
