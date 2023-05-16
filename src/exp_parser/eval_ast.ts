@@ -79,6 +79,10 @@ export let OPS_BINARY = {
     fn: (lhs: number, rhs: number) => lhs % rhs,
     prec: 1,
   },
+  "**": {
+    fn: (lhs: number, rhs: number) => lhs ** rhs,
+    prec: 1,
+  },
 };
 
 export let OPS_UNARY = {
