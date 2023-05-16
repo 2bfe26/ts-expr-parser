@@ -45,7 +45,7 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
       let token_next = l.next();
 
       if (token_next?.type !== "ParenEnd") {
-        throw new TypeError(`Expected ')' but got ${token_next?.value ?? "null"}`);
+        throw new TypeError(`Expected ')' but got ${token_next?.value}`);
       }
 
       return node;

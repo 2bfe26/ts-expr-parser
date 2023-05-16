@@ -63,7 +63,7 @@ Deno.test("[unit] should throw when incomplete scoped binary expression", () => 
   assertThrows(
     () => create_node(l),
     Error,
-    "Expected ')' but got null",
+    "Expected ')' but got undefined",
   );
 });
 
@@ -118,12 +118,13 @@ Deno.test("[unit] should throw when incomplete list", () => {
   let l = create_lexer_stub([
     { type: "BracketStart", value: "[" },
     { type: "Symbol", value: "1" },
+    { type: "ParenEnd", value: ")" },
   ]);
 
   assertThrows(
     () => create_node(l),
     Error,
-    "Expected ']' but got undefined",
+    "Expected ']' but got )",
   );
 });
 
@@ -240,11 +241,12 @@ Deno.test("[unit] should throw when unexpected end of expression scope", () => {
     { type: "Op", value: "+" },
     { type: "ParenStart", value: "(" },
     { type: "Symbol", value: "1" },
+    { type: "BracketEnd", value: "]" },
   ]);
 
   assertThrows(
     () => create_node(l),
     TypeError,
-    "Expected ')' but got null",
+    "Expected ')' but got ]",
   );
 });
