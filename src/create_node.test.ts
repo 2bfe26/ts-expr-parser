@@ -213,12 +213,13 @@ Deno.test("[unit] should thow when inexpected end of function call with args", (
     { type: "Symbol", value: "1" },
     { type: "Comma", value: "," },
     { type: "Symbol", value: "1" },
+    { type: "BracketEnd", value: "]" },
   ]);
 
   assertThrows(
     () => create_node(l),
     TypeError,
-    "Expected ')' but got undefined",
+    "Expected ')' but got ]",
   );
 });
 
