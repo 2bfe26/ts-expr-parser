@@ -6,7 +6,6 @@
 
 ### Todo
 
-- [ ] TEST: add tests for create_node
 - [ ] FEAT: Custom errors that point into input code
 
 ### References

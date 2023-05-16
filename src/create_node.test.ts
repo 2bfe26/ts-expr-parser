@@ -16,6 +16,42 @@ function create_lexer_stub(tokens: Token[]): Lexer {
   };
 }
 
+Deno.test("[unit] should create a AST representing a binary expression with extra scope", () => {
+  let l = create_lexer_stub([
+    { type: "Symbol", value: "3" },
+    { type: "Op", value: "-" },
+    { type: "ParenStart", value: "(" },
+    { type: "Symbol", value: "3" },
+    { type: "Op", value: "-" },
+    { type: "Symbol", value: "10" },
+    { type: "ParenEnd", value: ")" },
+  ]);
+
+  let sut = create_node(l);
+
+  assertEquals(sut, {
+    type: "BinaryOp",
+    value: {
+      op: "-",
+      lhs: { type: "NumberLiteral", value: 3 },
+      rhs: {
+        type: "BinaryOp",
+        value: {
+          op: "-",
+          lhs: {
+            type: "NumberLiteral",
+            value: 3,
+          },
+          rhs: {
+            type: "NumberLiteral",
+            value: 10,
+          },
+        },
+      },
+    },
+  });
+});
+
 Deno.test("[unit] should create a AST representing a list of numbers", () => {
   let l = create_lexer_stub([
     { type: "BracketStart", value: "[" },
@@ -37,6 +73,17 @@ Deno.test("[unit] should create a AST representing a list of numbers", () => {
       { type: "NumberLiteral", value: 3 },
     ],
   });
+});
+
+Deno.test("[unit] should create a AST representing a empty list", () => {
+  let l = create_lexer_stub([
+    { type: "BracketStart", value: "[" },
+    { type: "BracketEnd", value: "]" },
+  ]);
+
+  let sut = create_node(l);
+
+  assertEquals(sut, { type: "List", value: [] });
 });
 
 Deno.test("[unit] should create a AST representing a string", () => {
@@ -82,6 +129,34 @@ Deno.test("[unit] should throw when provided a incomplete binary expression", ()
     () => create_node(l),
     Error,
     "Expected primary expression but reached the end of the input",
+  );
+});
+
+Deno.test("[unit] should throw when provided a incomplete binary expression scope", () => {
+  let l = create_lexer_stub([
+    { type: "ParenStart", value: "(" },
+    { type: "Symbol", value: "1" },
+    { type: "Op", value: "+" },
+    { type: "Symbol", value: "1" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    Error,
+    "Expected ')' but got null",
+  );
+});
+
+Deno.test("[unit] should throw when provided a incomplete list", () => {
+  let l = create_lexer_stub([
+    { type: "BracketStart", value: "[" },
+    { type: "Symbol", value: "1" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    Error,
+    "Expected ']' but got undefined",
   );
 });
 

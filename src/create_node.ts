@@ -40,19 +40,19 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
      *  This line and beyond contains expressions that **needs**
      *  performing a lookahead, this is the reason for "token_next".
      */
-    let token_next = l.next();
-
     if (token.type === "ParenStart") {
       let node = create_node(l);
+      let token_next = l.next();
 
       if (token_next?.type !== "ParenEnd") {
-        throw new TypeError(`Expected ')' but got '${token_next?.value ?? "null"}'`);
+        throw new TypeError(`Expected ')' but got ${token_next?.value ?? "null"}`);
       }
 
       return node;
     }
 
     if (token.type === "BracketStart") {
+      let token_next = l.next();
       let value = [] as ASTNode[];
 
       if (!token_next) {
@@ -75,11 +75,13 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
       }
 
       if (token_next?.type !== "BracketEnd") {
-        throw new TypeError(`Expected ']' but got '${token_next?.value}'`);
+        throw new TypeError(`Expected ']' but got ${token_next?.value}`);
       }
 
       return { type: "List", value };
     }
+
+    let token_next = l.next();
 
     if (token_next?.type === "ParenStart") {
       let params = [] as ASTNode[];
@@ -105,7 +107,7 @@ export function create_node(l: Lexer, prec = 0): ASTNode {
       }
 
       if (token_next?.type !== "ParenEnd") {
-        throw new TypeError(`Expected ']' but got '${token_next?.value}'`);
+        throw new TypeError(`Expected ')' but got '${token_next?.value}'`);
       }
 
       return { type: "FunctionCall", value: { name: token.value, params } };
