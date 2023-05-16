@@ -16,7 +16,7 @@ function create_lexer_stub(tokens: Token[]): Lexer {
   };
 }
 
-Deno.test("[unit] should create a AST representing a binary expression with extra scope", () => {
+Deno.test("[unit] should create an AST of a scoped binary expression", () => {
   let l = create_lexer_stub([
     { type: "Symbol", value: "3" },
     { type: "Op", value: "-" },
@@ -52,7 +52,35 @@ Deno.test("[unit] should create a AST representing a binary expression with extr
   });
 });
 
-Deno.test("[unit] should create a AST representing a list of numbers", () => {
+Deno.test("[unit] should throw when incomplete scoped binary expression", () => {
+  let l = create_lexer_stub([
+    { type: "ParenStart", value: "(" },
+    { type: "Symbol", value: "1" },
+    { type: "Op", value: "+" },
+    { type: "Symbol", value: "1" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    Error,
+    "Expected ')' but got null",
+  );
+});
+
+Deno.test("[unit] should throw when incomplete binary expression", () => {
+  let l = create_lexer_stub([
+    { type: "Symbol", value: "1" },
+    { type: "Op", value: "+" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    Error,
+    "Expected primary expression but reached the end of the input",
+  );
+});
+
+Deno.test("[unit] should create a AST of a list of numbers", () => {
   let l = create_lexer_stub([
     { type: "BracketStart", value: "[" },
     { type: "Symbol", value: "1" },
@@ -75,7 +103,7 @@ Deno.test("[unit] should create a AST representing a list of numbers", () => {
   });
 });
 
-Deno.test("[unit] should create a AST representing a empty list", () => {
+Deno.test("[unit] should create a AST of a list empty", () => {
   let l = create_lexer_stub([
     { type: "BracketStart", value: "[" },
     { type: "BracketEnd", value: "]" },
@@ -86,7 +114,32 @@ Deno.test("[unit] should create a AST representing a empty list", () => {
   assertEquals(sut, { type: "List", value: [] });
 });
 
-Deno.test("[unit] should create a AST representing a string", () => {
+Deno.test("[unit] should throw when incomplete list", () => {
+  let l = create_lexer_stub([
+    { type: "BracketStart", value: "[" },
+    { type: "Symbol", value: "1" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    Error,
+    "Expected ']' but got undefined",
+  );
+});
+
+Deno.test("[unit] should throw when incomplete list empty", () => {
+  let l = create_lexer_stub([
+    { type: "BracketStart", value: "[" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    TypeError,
+    "Unexpected end of input",
+  );
+});
+
+Deno.test("[unit] should create a AST of a string", () => {
   let l = create_lexer_stub([
     { type: "String", value: "hello world" },
   ]);
@@ -99,7 +152,7 @@ Deno.test("[unit] should create a AST representing a string", () => {
   });
 });
 
-Deno.test("[unit] should create a AST representing a unary expression", () => {
+Deno.test("[unit] should create a AST of an unary expression", () => {
   let l = create_lexer_stub([
     { type: "Op", value: "-" },
     { type: "Symbol", value: "2" },
@@ -119,47 +172,6 @@ Deno.test("[unit] should create a AST representing a unary expression", () => {
   });
 });
 
-Deno.test("[unit] should throw when provided a incomplete binary expression", () => {
-  let l = create_lexer_stub([
-    { type: "Symbol", value: "1" },
-    { type: "Op", value: "+" },
-  ]);
-
-  assertThrows(
-    () => create_node(l),
-    Error,
-    "Expected primary expression but reached the end of the input",
-  );
-});
-
-Deno.test("[unit] should throw when provided a incomplete binary expression scope", () => {
-  let l = create_lexer_stub([
-    { type: "ParenStart", value: "(" },
-    { type: "Symbol", value: "1" },
-    { type: "Op", value: "+" },
-    { type: "Symbol", value: "1" },
-  ]);
-
-  assertThrows(
-    () => create_node(l),
-    Error,
-    "Expected ')' but got null",
-  );
-});
-
-Deno.test("[unit] should throw when provided a incomplete list", () => {
-  let l = create_lexer_stub([
-    { type: "BracketStart", value: "[" },
-    { type: "Symbol", value: "1" },
-  ]);
-
-  assertThrows(
-    () => create_node(l),
-    Error,
-    "Expected ']' but got undefined",
-  );
-});
-
 Deno.test("[unit] should throw when primary expression starts with )", () => {
   let l = create_lexer_stub([
     { type: "Symbol", value: "1" },
@@ -174,6 +186,41 @@ Deno.test("[unit] should throw when primary expression starts with )", () => {
   );
 });
 
+Deno.test("[unit] should create a AST of a function call with args", () => {
+  let l = create_lexer_stub([
+    { type: "Symbol", value: "max" },
+    { type: "ParenStart", value: "(" },
+    { type: "Symbol", value: "1" },
+    { type: "Comma", value: "," },
+    { type: "Symbol", value: "1" },
+    { type: "ParenEnd", value: ")" },
+  ]);
+
+  assertEquals(create_node(l), {
+    type: "FunctionCall",
+    value: {
+      name: "max",
+      params: [{ type: "NumberLiteral", value: 1 }, { type: "NumberLiteral", value: 1 }],
+    },
+  });
+});
+
+Deno.test("[unit] should thow when inexpected end of function call with args", () => {
+  let l = create_lexer_stub([
+    { type: "Symbol", value: "max" },
+    { type: "ParenStart", value: "(" },
+    { type: "Symbol", value: "1" },
+    { type: "Comma", value: "," },
+    { type: "Symbol", value: "1" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    TypeError,
+    "Expected ')' but got undefined",
+  );
+});
+
 Deno.test("[unit] should throw when unexpected end of function call", () => {
   let l = create_lexer_stub([
     { type: "Symbol", value: "max" },
@@ -184,5 +231,20 @@ Deno.test("[unit] should throw when unexpected end of function call", () => {
     () => create_node(l),
     TypeError,
     "Unexpected end of input",
+  );
+});
+
+Deno.test("[unit] should throw when unexpected end of expression scope", () => {
+  let l = create_lexer_stub([
+    { type: "Symbol", value: "1" },
+    { type: "Op", value: "+" },
+    { type: "ParenStart", value: "(" },
+    { type: "Symbol", value: "1" },
+  ]);
+
+  assertThrows(
+    () => create_node(l),
+    TypeError,
+    "Expected ')' but got null",
   );
 });
