@@ -4,10 +4,6 @@
 
 ## ts-expression-parser
 
-### Todo
-
-- [ ] FEAT: Custom errors that point into input code
-
 ### References
 
 - [TSoding](https://www.youtube.com/watch?v=Yjgh7bfh2FU)

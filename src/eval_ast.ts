@@ -1,7 +1,11 @@
 import { ASTNode } from "./create_node.ts";
-import { ParserContext } from "./parser.ts";
 
-export function eval_ast(n: ASTNode, context = {} as ParserContext): any {
+export type Context = {
+  vars?: Record<string, any>;
+  fns?: Record<string, (...n: any[]) => any>;
+};
+
+export function eval_ast(n: ASTNode, context = {} as Context): any {
   switch (n.type) {
     case "NumberLiteral":
     case "StringLiteral": {

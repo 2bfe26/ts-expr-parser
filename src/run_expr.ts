@@ -1,13 +1,8 @@
 import { create_lexer } from "./create_lexer.ts";
 import { create_node } from "./create_node.ts";
-import { eval_ast } from "./eval_ast.ts";
+import { Context, eval_ast } from "./eval_ast.ts";
 
-export type ParserContext = {
-  vars?: Record<string, any>;
-  fns?: Record<string, (...n: any[]) => any>;
-};
-
-export function parser(src: string, context?: ParserContext) {
+export function run_expr(src: string, context?: Context) {
   let l = create_lexer(src);
   let ast = create_node(l);
 
